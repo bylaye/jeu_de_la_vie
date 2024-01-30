@@ -1,56 +1,52 @@
 from tkinter import *
-import random
-from jeu_de_la_vie import Games 
-import time
+from GameRules import GameRules
+import initialise
 
-root = Tk()
-root.title('Jeu de la Vie')
-canvas = Canvas(root,  width=600, height=700, background='blue')
-canvas.pack(fill='both', expand=True)
-
-MIN_X = 0
-MAX_X = 600
-CELLULE_SIZE = 5
-COLOR_BACKGROUND = 'red'
+COLOR_BACKGROUND_CELLULE = 'red'
+COLOR_BACKGROUND_CANVAS = 'blue'
 COLOR_SURVIVE_CELLULE = 'white'
-
-# l e trait fine de separation des cellules
 LINE_CELLULE_SEPARATOR = 'black'
-
-initial = [(30, 35), (30, 36), (29, 36), (31, 36), (29, 37)]
-#initial = [(50, 55), (50, 56), (49, 56), (51, 56), (49, 57)]
-initial = [(2,1), (2,2), (3,1), (3,2)]
-initial = [(7,5), (7,6), (8,5), (8,6), (9,3), (9,4), (10,3), (10,4)]
-initial = [(7,5), (7,6), (7,7), (7,8), (7,9), (7,10), (7,11), (7,12), (7,13), (7,14)]
-initial = [(i,j) for i in range(30,70) for j in range(30,70) ]
-G = Games(initial, int(MAX_X/CELLULE_SIZE))
+IS_CELLULE_LINES = True
+INTERVAL_TIME_SIMULATION = 200 # unite en milliseconde
+MIN_X = 0 #A ne pas changer
+MAX_X = 500
+CELLULE_SIZE = 10
+TOTAL_CELLULE = int(MAX_X/CELLULE_SIZE)
+TEXT_FONT = 'Helvetica'
+TEXT_CANVAS_ANCHOR = 'sw'
 
 pause_simulation = True
 started = False
 iteration = 0
+d_x = int(TOTAL_CELLULE/2)
+initial_cell = initialise.initial(d_x, 4)
+G = GameRules(initial_cell, TOTAL_CELLULE)
 
-def cellule_vivant(list_cellule, CELLULE_SIZE):
+root = Tk()
+root.title('Jeu de la Vie')
+canvas = Canvas(root,  width=MAX_X, height=MAX_X+100, background=COLOR_BACKGROUND_CANVAS)
+canvas.pack(fill='both', expand=True)
+
+def cellule_survive(list_cellule, CELLULE_SIZE):
 	for cell in list_cellule:
 		b, a = cell	
 		r = (a*CELLULE_SIZE, b*CELLULE_SIZE, CELLULE_SIZE*(a+1), CELLULE_SIZE*(b+1))
 		canvas.create_rectangle(r, width=1, fill=COLOR_SURVIVE_CELLULE)
-
 
 def trace_cellule(CELLULE_SIZE, MIN_X, MAX_X):
 	for i in range(MIN_X+CELLULE_SIZE, MAX_X, CELLULE_SIZE):
 		canvas.create_line((i, MIN_X, i, MAX_X), width=1, fill=LINE_CELLULE_SEPARATOR)
 		canvas.create_line((MIN_X, i, MAX_X, i), width=1, fill=LINE_CELLULE_SEPARATOR)
 
-
 def simulation():
 	canvas.delete('all')
-	canvas.create_rectangle(MIN_X,MIN_X,MAX_X,MAX_X, width=1, fill=COLOR_BACKGROUND)
-	v = refresh()
-	cellule_vivant(v, CELLULE_SIZE)
-	trace_cellule(CELLULE_SIZE, MIN_X, MAX_X)
+	canvas.create_rectangle(MIN_X,MIN_X,MAX_X,MAX_X, width=1, fill=COLOR_BACKGROUND_CELLULE)
+	cellule_survive(refresh(), CELLULE_SIZE)
+	if IS_CELLULE_LINES:
+		trace_cellule(CELLULE_SIZE, MIN_X, MAX_X)
 	stats()
 	if not pause_simulation:
-		root.after(200,simulation)
+		root.after(INTERVAL_TIME_SIMULATION, simulation)
 
 def refresh():
 	global started
@@ -59,25 +55,28 @@ def refresh():
 		cell = initial
 		started = True
 	else:
-		cell = G.update_cellule()
+		cell = G.update_cells()
 		G.update_plateau()
 	return cell
 
 def stats():
 	global iteration
 	t = f'Iteration : {iteration}'
-	cell_dead = G.get_cellule_morte()
-	cell_survive = G.get_cellule_naissance()
-	if len(cell_dead)==0 and len(cell_survive) == 0:
+	cell_dead = G.get_death_cells()
+	cell_birth = G.get_birth_cells()
+	cell_survived = G.get_survived_cells()
+	if len(cell_dead)==0 and len(cell_birth) == 0:
 		e = f'Stable after {iteration} iteration'
-		canvas.create_text(0, 680, text=e, font=("Helvetica", 12), anchor="sw")
+		canvas.create_text(0, MAX_X+80, text=e, font=(TEXT_FONT, 12), anchor=TEXT_CANVAS_ANCHOR)
 	else:
 		iteration += 1
 	t2 = f'Cellule Dead {len(cell_dead)}'
-	t3 = f'Cellule Birth {len(cell_survive)}'
-	canvas.create_text(0, 620, text=t, font=("Helvetica", 12), anchor="sw")
-	canvas.create_text(0, 640, text=t2, font=("Helvetica", 12), anchor="sw")
-	canvas.create_text(0, 660, text=t3, font=("Helvetica", 12), anchor="sw")
+	t3 = f'Cellule Birth {len(cell_birth)}'
+	t4 = f'Cellule Survived {len(cell_survived)}'
+	canvas.create_text(0, MAX_X+20, text=t, font=(TEXT_FONT, 12), anchor=TEXT_CANVAS_ANCHOR)
+	canvas.create_text(0, MAX_X+35, text=t2, font=(TEXT_FONT, 12), anchor=TEXT_CANVAS_ANCHOR)
+	canvas.create_text(0, MAX_X+50, text=t3, font=(TEXT_FONT, 12), anchor=TEXT_CANVAS_ANCHOR)
+	canvas.create_text(0, MAX_X+65, text=t4, font=(TEXT_FONT, 12), anchor=TEXT_CANVAS_ANCHOR)
 	
 	
 def play_pause():
