@@ -188,13 +188,14 @@ def imprime_plateau(plateau):
         out = out+str(e)+'\n'
     return out
 
-""" des exemples de configuration d'initialisation """
+# des exemples de configuration d'initialisation 
 initial_0 = [(2,1), (2,2), (2,3), (2,4), (2,5), (2,6), (1,2)]
 carre = [(2,1), (2,2), (3,1), (3,2)] # stable carre
 balise = [(7,5), (7,6), (8,5), (8,6), (9,3), (9,4), (10,3), (10,4)]
 fascinant = [(10,15), (10,16), (9,16), (11,16), (9,17)] 
 ligne_10 = [(7,5), (7,6), (7,7), (7,8), (7,9), (7,10), (7,11), (7,12), (7,13), (7,14)]
 
+"""
 initial = ligne_10
 N_cellule = 25
 G = Games(initial, N_cellule)
@@ -220,3 +221,4 @@ while True:
     time.sleep(0.7)
     iter += 1
     os.system('clear||cls')
+"""
