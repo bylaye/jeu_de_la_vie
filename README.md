@@ -14,7 +14,7 @@ Les requirements Tkinter, python v3.10
 python run.py
 ```
 
-1. Lancer en mode terminal
+2. Lancer en mode terminal
 ```
 python run_cli.py
 ```
