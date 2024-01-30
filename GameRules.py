@@ -14,7 +14,7 @@
 from Neighbors import Neighbors
 
 class GameRules:
-    def __init__(self, initial, N_cellule = 12, SURVIVE='x', NO_SURVIVE='-'):
+    def __init__(self, initial, N_cellule = 12, SURVIVE='x', NO_SURVIVE=' '):
         self.initial = initial
         self.SURVIVE = SURVIVE
         self.NO_SURVIVE = NO_SURVIVE
