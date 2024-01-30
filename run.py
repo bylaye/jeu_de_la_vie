@@ -10,7 +10,7 @@ IS_CELLULE_LINES = True
 INTERVAL_TIME_SIMULATION = 200 # unite en milliseconde
 MIN_X = 0 #A ne pas changer
 MAX_X = 500
-CELLULE_SIZE = 10
+CELLULE_SIZE = 5
 TOTAL_CELLULE = int(MAX_X/CELLULE_SIZE)
 TEXT_FONT = 'Helvetica'
 TEXT_CANVAS_ANCHOR = 'sw'
@@ -19,8 +19,8 @@ pause_simulation = True
 started = False
 iteration = 0
 d_x = int(TOTAL_CELLULE/2)
-initial_cell = initialise.initial(d_x, 4)
-G = GameRules(initial_cell, TOTAL_CELLULE)
+initial = initialise.initial(d_x, 4)
+G = GameRules(initial, TOTAL_CELLULE)
 
 root = Tk()
 root.title('Jeu de la Vie')
